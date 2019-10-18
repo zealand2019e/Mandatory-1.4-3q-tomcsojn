@@ -79,24 +79,27 @@ namespace Assignment1._4
             while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
             {
                 // Translate data bytes to a ASCII string.
-                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                data = System.Text.Encoding.UTF8.GetString(bytes, 0, i).Trim();
                 Console.WriteLine("Received: {0} from client {1}", data, clientNumber);
 
                 // Process the data sent by the client.
 
                 string mess = "not valid command";
                 string[] words = data.ToLower().Split(' ');
-                if (words[0].Trim()=="getall")
+                if (words[0]=="getall")
                 {
                     mess = JsonConvert.SerializeObject(books);
                 }
-                if (words[0].Trim() == "get")
+                if (words[0] == "get")
                 {
                     mess = JsonConvert.SerializeObject(books.Find(e => e.Isbn13 == words[1]));
                 }
-                if (words[0].Trim() == "save")
+                if (words[0] == "save")
                 {
-                    books.Add(JsonConvert.DeserializeObject<Book>(words[1]));
+                    string myjson = data.Split("{")[1].Split("}")[0];
+                    myjson = "{" + myjson + "}";
+                    //string myjson = "{ \"Title\":\"The Hobbit\",\"Author\":\". R. R. Tolkien\",\"Pagenumber\":340,\"Isbn13\":\"2348573648576\"}";
+                books.Add(JsonConvert.DeserializeObject<Book>(myjson));
                     mess = "";
                 }
 
